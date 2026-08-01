@@ -1,4 +1,4 @@
-# Product Hub Security Specification
+# SECURITY.md
 
 **Product:** Product Hub
 
@@ -8,523 +8,750 @@
 
 ---
 
-# Purpose
+# Security Architecture Specification
 
-This document defines the security architecture, requirements, and security controls for Product Hub.
+This document defines the security architecture, requirements, controls, and implementation guidelines for Product Hub.
 
-Security is a core product capability and shall be designed into every layer of the application.
+Security is a core product capability and shall be incorporated into every layer of the application from design through deployment.
+
+This specification applies to:
+
+- Community Edition
+- Professional Edition
+- Enterprise Edition
+
+unless explicitly stated otherwise.
 
 ---
 
 # Security Principles
 
-SEC-001
+Product Hub follows a Secure-by-Default architecture.
 
-Secure by Default.
+Core principles include:
 
----
-
-SEC-002
-
-Least Privilege.
-
----
-
-SEC-003
-
-Defense in Depth.
-
----
-
-SEC-004
-
-Zero Trust.
+- Authentication Required
+- Authorization by Default
+- Least Privilege
+- Defense in Depth
+- Zero Trust
+- Encryption in Transit
+- Encryption at Rest
+- Multi-Tenant Isolation
+- Audit Everything
+- Secure by Design
+- Fail Secure
+- Minimize Attack Surface
+- Privacy by Default
 
 ---
 
-SEC-005
+## SEC-001 — Secure by Default
 
-Fail Securely.
+Every component shall operate securely without requiring additional configuration.
 
----
-
-SEC-006
-
-Explicit Authorization.
+Insecure defaults are prohibited.
 
 ---
 
-SEC-007
+## SEC-002 — Authentication Required
 
-Protect Customer Data.
-
----
-
-SEC-008
-
-Protect AI Usage.
+Every request accessing protected resources shall require authentication unless explicitly designated as public.
 
 ---
 
-SEC-009
+## SEC-003 — Authorization Required
 
-Audit Critical Operations.
+Authentication alone shall never grant resource access.
 
----
-
-SEC-010
-
-Never Trust User Input.
+Every protected operation shall perform authorization.
 
 ---
 
-# Security Objectives
+## SEC-004 — Least Privilege
 
-The platform shall:
+Users, services, APIs, and background jobs shall receive only the permissions necessary to perform their intended functions.
 
-- Protect customer data.
-- Prevent unauthorized access.
-- Protect AI providers.
-- Prevent privilege escalation.
-- Maintain audit history.
-- Secure uploaded files.
-- Secure APIs.
-- Protect secrets.
-- Prevent tenant data leakage.
+---
+
+## SEC-005 — Defense in Depth
+
+Security controls shall exist at multiple layers including:
+
+- Client
+- API
+- Application
+- Domain
+- Database
+- Infrastructure
+- Network
+
+Failure of one control shall not compromise the system.
+
+---
+
+## SEC-006 — Zero Trust
+
+No request shall be inherently trusted based on:
+
+- Network location
+- Internal service status
+- IP address
+- Deployment environment
+
+Every request shall be verified.
+
+---
+
+## SEC-007 — Secure Development Lifecycle
+
+Security shall be integrated into:
+
+- Design
+- Development
+- Testing
+- Deployment
+- Maintenance
+
+---
+
+## SEC-008 — Auditability
+
+Security-relevant actions shall be logged.
+
+Logs shall support:
+
+- Incident response
+- Compliance
+- Troubleshooting
+- Forensics
 
 ---
 
 # Authentication
 
-Supported
+Authentication verifies the identity of users and systems.
 
-- Email / Password
+---
 
-Future
+## SEC-100 — Identity Provider
 
+Authentication shall be delegated to an external Identity Provider.
+
+Supported providers may include:
+
+- Keycloak
 - Microsoft Entra ID
-- Google
-- GitHub
-- OpenID Connect
-- SAML
+- OpenID Connect compliant providers
 
-Requirements
+---
 
-- Secure password hashing
-- Password reset
-- Email verification
-- Session expiration
-- Refresh tokens
-- Account lockout
+## SEC-101 — Password Storage
+
+Product Hub shall never store plaintext passwords.
+
+Passwords shall be managed exclusively by the Identity Provider.
+
+---
+
+## SEC-102 — MFA Support
+
+Multi-Factor Authentication shall be supported when provided by the Identity Provider.
+
+Enterprise Edition may require MFA.
+
+---
+
+## SEC-103 — Session Security
+
+Authenticated sessions shall:
+
+- expire automatically
+- support logout
+- support token revocation
+- reject expired tokens
+
+---
+
+## SEC-104 — Token Validation
+
+Every access token shall be validated before processing requests.
+
+Validation includes:
+
+- Signature
+- Expiration
+- Issuer
+- Audience
+- Tenant
+- Subject
+
+---
+
+## SEC-105 — Refresh Tokens
+
+Refresh tokens shall never be exposed to frontend JavaScript unless explicitly designed for secure public clients.
+
+---
+
+## SEC-106 — Password Policies
+
+Password complexity, expiration, and recovery shall be enforced by the Identity Provider.
 
 ---
 
 # Authorization
 
+Authorization determines whether an authenticated identity may perform an action.
+
+---
+
+## SEC-200 — RBAC
+
 Authorization shall use Role-Based Access Control.
 
-Initial Roles
+---
 
-- Owner
-- Administrator
-- Editor
-- Viewer
+## SEC-201 — Permission-Based Authorization
 
-Permissions shall always be verified server-side.
+Permissions shall represent individual capabilities.
 
-Client-side authorization shall never be trusted.
+Examples include:
+
+- Product.Read
+- Product.Create
+- Product.Update
+- Product.Delete
+- Category.Manage
+- User.Invite
+- Organization.Manage
 
 ---
 
-# Organization Isolation
+## SEC-202 — Deny by Default
 
-Every resource belongs to exactly one Organization.
-
-Users shall never access resources owned by another Organization.
-
-Every query shall enforce Organization filtering.
-
-Cross-tenant joins are prohibited.
+Access shall be denied unless explicitly granted.
 
 ---
 
-# Password Policy
+## SEC-203 — Organization Isolation
 
-Minimum Length
-
-12 Characters
-
-Requirements
-
-- Uppercase
-- Lowercase
-- Number
-- Special Character
-
-Passwords shall never be stored in plain text.
-
-Passwords shall never be logged.
+Users shall only access resources belonging to authorized organizations.
 
 ---
 
-# Session Security
+## SEC-204 — Business Unit Isolation
 
-Requirements
-
-- Secure Cookies
-- HttpOnly Cookies
-- SameSite Protection
-- Session Timeout
-- Refresh Token Rotation
+Permissions may be restricted to Business Units.
 
 ---
 
-# API Security
+## SEC-205 — Administrative Separation
 
-Requirements
-
-- HTTPS Only
-- JWT Authentication
-- Authorization Checks
-- Request Validation
-- Rate Limiting
-- Correlation IDs
+Administrative privileges shall not automatically grant unrestricted data access unless explicitly defined.
 
 ---
 
-# Input Validation
+## SEC-206 — Service Accounts
 
-Every request shall be validated.
+Service accounts shall use dedicated identities with restricted permissions.
 
-Validation includes
-
-- Required Fields
-- Length
-- Data Types
-- Range
-- Enumeration
-- File Type
-- File Size
+Shared administrator accounts are prohibited.
 
 ---
 
-# Output Encoding
+# Multi-Tenant Security
 
-Every user-controlled value rendered by the UI shall be encoded.
+Product Hub is designed as a multi-tenant platform.
 
-The application shall prevent
-
-- XSS
-- HTML Injection
-- Script Injection
+Tenant isolation is a mandatory security requirement.
 
 ---
 
-# SQL Injection Protection
+## SEC-300 — Tenant Isolation
 
-Requirements
+Tenant data shall never be accessible by other tenants.
 
-- Parameterized Queries
-- ORM Usage
-- No Dynamic SQL
+Isolation shall be enforced at every application layer.
 
 ---
 
-# CSRF Protection
+## SEC-301 — Tenant Validation
 
-State-changing requests shall be protected.
+Every request shall include tenant context.
 
-Supported
-
-- Anti-forgery Tokens
-- SameSite Cookies
+Missing tenant information shall cause request rejection.
 
 ---
 
-# File Upload Security
+## SEC-302 — Database Isolation
 
-Allowed Types
+Queries shall never return data belonging to another tenant.
 
-- Images
-- PDF
-- Office Documents
-
-Requirements
-
-- MIME Validation
-- Extension Validation
-- File Size Validation
-- Virus Scanning (Future)
-- Randomized File Names
-
-Executable uploads are prohibited.
+Tenant filtering shall be mandatory.
 
 ---
 
-# Secrets Management
+## SEC-303 — Cross-Tenant Protection
 
-Secrets include
-
-- Database Passwords
-- API Keys
-- JWT Secrets
-- AI Provider Keys
-- SMTP Credentials
-
-Secrets shall
-
-- Never exist in source code.
-- Never exist in Git.
-- Never exist in logs.
-
-Supported Sources
-
-- Environment Variables
-- Secret Stores
+Cross-tenant operations require explicit platform-level authorization.
 
 ---
 
-# Audit Logging
+## SEC-304 — Shared Infrastructure
 
-Audit Events
-
-- Login
-- Logout
-- Product Creation
-- Product Update
-- Product Archive
-- Import
-- Export
-- AI Acceptance
-- Permission Changes
-
-Audit records are immutable.
-
----
-
-# Logging
-
-Application Logs
-
-- Errors
-- Warnings
-- Information
-
-Sensitive Information shall never be logged.
-
-Never Log
-
-- Passwords
-- Tokens
-- Secrets
-- AI Keys
-- Connection Strings
-
----
-
-# AI Security
-
-AI shall never
-
-- Execute code.
-- Modify product data automatically.
-- Bypass authorization.
-- Access another Organization.
-- Ignore business validation.
-
-Every AI response requires explicit user confirmation.
-
----
-
-# AI Provider Security
-
-Supported Providers
-
-- OpenAI
-- Azure OpenAI
-- Anthropic
-- Gemini
-- Ollama
-
-Requirements
-
-- Provider Abstraction
-- Secure API Keys
-- Timeout
-- Retry Limits
-- Cost Limits
-
----
-
-# AI Cost Protection
-
-Every Organization shall support
-
-- Monthly Budget
-- Usage Limits
-- Request Limits
-- Token Limits
-
-The platform shall prevent uncontrolled AI spending.
-
----
-
-# Rate Limiting
-
-Authentication
-
-10 Requests / Minute
-
-Standard API
-
-100 Requests / Minute
-
-AI API
-
-Configurable Per Organization
-
----
-
-# Error Handling
-
-Errors shall never expose
-
-- Stack Traces
-- SQL Statements
-- Internal File Paths
-- Secrets
-- AI Prompts
-
-Users receive safe error messages only.
+Shared infrastructure shall never compromise logical tenant isolation.
 
 ---
 
 # Data Protection
 
-Sensitive Data
-
-- User Information
-- Organization Information
-- AI Configuration
-- Product Data
-
-Requirements
-
-- Encryption in Transit
-- Encryption at Rest (Future)
-- Access Control
-- Audit Logging
+Protecting customer data is a fundamental requirement.
 
 ---
 
-# Dependency Security
+## SEC-400 — Encryption in Transit
 
-Third-party packages shall
+All communications shall use TLS.
 
-- Be actively maintained
-- Receive security updates
-- Avoid known vulnerabilities
+Plain HTTP shall not be supported except for local development.
 
-Dependencies shall be reviewed regularly.
+---
+
+## SEC-401 — Encryption at Rest
+
+Sensitive data shall be encrypted at rest where supported by the deployment platform.
+
+---
+
+## SEC-402 — Secrets Management
+
+Secrets shall never be stored:
+
+- in source code
+- in Git repositories
+- in frontend applications
+
+Secrets shall be managed using secure secret storage.
+
+---
+
+## SEC-403 — Sensitive Data
+
+Sensitive information includes:
+
+- Access tokens
+- API keys
+- Secrets
+- Credentials
+- Personal information
+- Customer confidential information
+
+Such data shall receive additional protection.
+
+---
+
+## SEC-404 — Data Minimization
+
+Only necessary data shall be collected and stored.
+
+Unused personal information shall not be retained.
+
+---
+
+# Data Protection (continued)
+
+## SEC-405 — Personal Data Protection
+
+Personal data shall be processed in accordance with applicable privacy regulations.
+
+The system shall support:
+
+- Data access requests
+- Data correction
+- Data deletion
+- Data export
+- Consent management where applicable
+
+---
+
+## SEC-406 — Data Classification
+
+Data shall be classified according to sensitivity.
+
+Recommended classifications include:
+
+- Public
+- Internal
+- Confidential
+- Restricted
+
+Security controls shall be proportional to the classification.
+
+---
+
+## SEC-407 — Data Retention
+
+Data retention policies shall be configurable.
+
+Expired data shall be archived or securely deleted according to organizational policy.
+
+---
+
+## SEC-408 — Secure Deletion
+
+Deleted sensitive information shall not remain recoverable through normal application functionality.
+
+Where supported by the storage platform, secure deletion practices shall be followed.
+
+---
+
+# Input Validation
+
+All external input shall be considered untrusted.
+
+---
+
+## SEC-500 — Input Validation
+
+Every external input shall be validated before processing.
+
+Validation includes:
+
+- Required fields
+- Length
+- Format
+- Range
+- Type
+- Business rules
+
+---
+
+## SEC-501 — Server-Side Validation
+
+Server-side validation is mandatory.
+
+Client-side validation is provided for usability only.
+
+---
+
+## SEC-502 — Output Encoding
+
+Application output shall be encoded according to its destination to mitigate injection attacks.
+
+Examples include:
+
+- HTML encoding
+- JSON encoding
+- URL encoding
+
+---
+
+## SEC-503 — SQL Injection Protection
+
+Database access shall use parameterized queries or ORM-generated queries.
+
+String concatenation for SQL statements is prohibited.
+
+---
+
+## SEC-504 — Cross-Site Scripting (XSS)
+
+User-generated content shall be properly encoded before rendering.
+
+Where rich text is supported, HTML shall be sanitized.
+
+---
+
+## SEC-505 — Cross-Site Request Forgery (CSRF)
+
+State-changing operations shall be protected against CSRF attacks where applicable.
+
+---
+
+## SEC-506 — File Upload Validation
+
+Uploaded files shall be validated for:
+
+- File type
+- MIME type
+- File extension
+- File size
+- Malware (where available)
+
+Executable uploads shall be prohibited unless explicitly required.
+
+---
+
+## SEC-507 — Request Size Limits
+
+Maximum request sizes shall be configurable to reduce denial-of-service risks.
+
+---
+
+# API Security
+
+All APIs shall follow secure API development practices.
+
+---
+
+## SEC-600 — HTTPS Only
+
+Production APIs shall only be accessible over HTTPS.
+
+---
+
+## SEC-601 — API Authentication
+
+Protected APIs shall require valid authentication credentials.
+
+---
+
+## SEC-602 — Authorization Checks
+
+Authorization shall be enforced on every API endpoint.
+
+Authorization shall never rely solely on hidden UI elements.
+
+---
+
+## SEC-603 — Rate Limiting
+
+Rate limiting shall be configurable.
+
+Limits may be defined by:
+
+- User
+- IP Address
+- API Key
+- Tenant
+
+---
+
+## SEC-604 — API Versioning
+
+Breaking API changes shall be introduced through versioned endpoints.
+
+---
+
+## SEC-605 — Secure Error Responses
+
+API error responses shall never expose:
+
+- Stack traces
+- SQL statements
+- Internal file paths
+- Secrets
+- Credentials
+- Infrastructure details
+
+---
+
+## SEC-606 — Idempotency
+
+Where applicable, APIs shall support idempotent operations to reduce unintended duplicate processing.
+
+---
+
+## SEC-607 — API Documentation
+
+Only authorized users shall access protected API documentation.
+
+Development endpoints shall not be publicly exposed in production.
+
+---
+
+# Logging and Auditing
+
+Security-relevant events shall be recorded to support monitoring, compliance, and incident response.
+
+---
+
+## SEC-700 — Audit Logging
+
+The following events shall be auditable:
+
+- Login
+- Logout
+- Failed login
+- Password reset
+- User creation
+- User deletion
+- Permission changes
+- Role assignments
+- Organization changes
+- Product creation
+- Product deletion
+- Configuration changes
+
+---
+
+## SEC-701 — Immutable Audit Records
+
+Audit records shall not be editable through normal application functionality.
+
+---
+
+## SEC-702 — Log Protection
+
+Logs shall be protected against unauthorized access and modification.
+
+---
+
+## SEC-703 — Sensitive Information in Logs
+
+Logs shall never contain:
+
+- Passwords
+- Secrets
+- Access tokens
+- Refresh tokens
+- Encryption keys
+- Authentication credentials
+
+Sensitive values shall be masked or omitted.
+
+---
+
+## SEC-704 — Correlation IDs
+
+Each request shall be assigned a correlation identifier to support tracing across services.
+
+---
+
+## SEC-705 — Time Synchronization
+
+Systems generating audit logs shall use synchronized system clocks.
+
+Timestamps shall be recorded in UTC.
 
 ---
 
 # Infrastructure Security
 
-Deployment Requirements
-
-- HTTPS
-- Reverse Proxy
-- Secure Headers
-- Firewall
-- Backup Strategy
+Infrastructure shall follow secure deployment practices.
 
 ---
 
-# Security Headers
+## SEC-800 — Environment Separation
 
-Recommended
-
-- HSTS
-- X-Frame-Options
-- X-Content-Type-Options
-- Referrer-Policy
-- Content-Security-Policy
+Development, testing, staging, and production environments shall remain isolated.
 
 ---
 
-# Backup Strategy
+## SEC-801 — Principle of Least Privilege
 
-Database
+Infrastructure components shall operate with the minimum permissions required.
 
-Daily
+---
 
-Attachments
+## SEC-802 — Secure Configuration
 
-Daily
+Default credentials shall be removed before deployment.
 
-Configuration
+Unused services shall be disabled.
 
-Daily
+---
 
-Recovery shall be tested periodically.
+## SEC-803 — Dependency Management
+
+Third-party dependencies shall be regularly updated.
+
+Known critical vulnerabilities shall be remediated before release.
+
+---
+
+## SEC-804 — Container Security
+
+Container images shall:
+
+- Use minimal base images
+- Avoid unnecessary packages
+- Avoid running as root
+- Be regularly updated
+
+---
+
+## SEC-805 — Secret Rotation
+
+Secrets shall support periodic rotation without application downtime where practical.
+
+---
+
+## SEC-806 — Backup Security
+
+Backups shall:
+
+- Be encrypted
+- Be access controlled
+- Be periodically tested for restoration
+
+---
+
+## SEC-807 — Disaster Recovery
+
+Recovery procedures shall be documented and periodically validated.
 
 ---
 
 # Security Testing
 
-Required
-
-- Unit Tests
-- Integration Tests
-- Authorization Tests
-- Tenant Isolation Tests
-- API Security Tests
-- Upload Validation Tests
-
-Future
-
-- Penetration Testing
-- Vulnerability Scanning
+Security verification shall be integrated into the development lifecycle.
 
 ---
 
-# Incident Response
+## SEC-900 — Static Analysis
 
-Security incidents shall
-
-- Be logged
-- Receive unique identifiers
-- Preserve audit history
-- Notify administrators (Future)
+Source code shall undergo static application security testing where feasible.
 
 ---
 
-# Compliance Goals
+## SEC-901 — Dependency Scanning
 
-Architecture shall support future compliance with
-
-- ISO 27001
-- SOC 2
-- GDPR
-- HIPAA (Future)
-- PCI DSS (If Payments are Introduced)
+Dependencies shall be scanned for known vulnerabilities.
 
 ---
 
-# Security Architecture Goals
+## SEC-902 — Penetration Testing
 
-The Product Hub security architecture shall provide
+Enterprise deployments may require periodic penetration testing.
 
-- Confidentiality
-- Integrity
-- Availability
-- Authentication
-- Authorization
-- Accountability
-- Auditability
-- Tenant Isolation
-- AI Security
-- Enterprise Readiness
+---
 
-This document serves as the authoritative security specification for Product Hub.
+## SEC-903 — Security Regression Testing
+
+Resolved security issues shall include regression tests where applicable.
+
+---
+
+## SEC-904 — Vulnerability Management
+
+Reported vulnerabilities shall be:
+
+- Logged
+- Assessed
+- Prioritized
+- Remediated
+- Verified
+
+---
+
+# Compliance
+
+## SEC-1000 — Security Reviews
+
+Major architectural changes shall undergo security review before implementation.
+
+---
+
+## SEC-1001 — Secure Release
+
+Production releases shall not knowingly include unresolved Critical or High severity security vulnerabilities.
+
+---
+
+## SEC-1002 — Continuous Improvement
+
+This document shall be reviewed periodically and updated as Product Hub evolves.
+
+---
