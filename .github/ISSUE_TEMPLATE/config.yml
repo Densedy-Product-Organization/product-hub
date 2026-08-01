@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Product Hub Documentation
+    about: Read the project documentation before opening an issue.
+    url: https://github.com/DensedyOrg/product-hub
+
+  - name: Security Vulnerability
+    about: Report security vulnerabilities privately. Do not create a public issue.
+    url: https://github.com/DensedyOrg/product-hub/security
+
+  - name: Support
+    about: Read the support policy before requesting assistance.
+    url: https://github.com/DensedyOrg/product-hub/blob/main/SUPPORT.md
