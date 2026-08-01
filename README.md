@@ -1,197 +1,201 @@
 # Product Hub
 
-> AI-assisted Product Information Management (PIM) platform for organizations struggling with fragmented product data.
+> An AI-assisted Product Information Management platform for organizations whose product data is fragmented across spreadsheets, business systems, documents, websites, and internal tools.
 
----
+## Status
 
-# Vision
+Pre-development / Product Discovery
 
-Product Hub is an enterprise-grade Product Information Management (PIM) platform designed to become the single source of truth for product information across organizations.
+## Vision
 
-Businesses frequently maintain product data across spreadsheets, ERP systems, CRM systems, eCommerce platforms, supplier catalogs, internal databases, and documents. Product Hub centralizes, governs, enriches, and exposes that information through a modern API-first architecture.
+Product Hub provides organizations with a trusted and centralized source of product information.
 
-Product Hub is the first product built on the Platform Core ecosystem.
+It is designed for businesses that currently maintain product data across disconnected spreadsheets, ERP systems, e-commerce platforms, supplier files, websites, documents, and internal applications.
 
----
+The product centralizes product records, taxonomies, attributes, models, variants, media, and supporting documents while providing optional AI assistance for repetitive data-management work.
 
-# Problem Statement
+## Problem Statement
 
-Organizations experience the following problems:
+Organizations commonly experience the following problems:
 
 - Product information is duplicated across multiple systems.
-- Product attributes are inconsistent.
-- Product descriptions become outdated.
-- Product variants are difficult to manage.
-- Product categorization differs between departments.
-- Supplier product information requires manual processing.
-- Product information quality is poor.
-- AI initiatives fail because product master data is unreliable.
+- Product names and descriptions are inconsistent.
+- Product attributes are incomplete or incorrectly formatted.
+- Product categories differ between departments and systems.
+- Product models and variants are difficult to maintain.
+- Employees cannot easily determine which product record is authoritative.
+- Spreadsheet imports require substantial manual correction.
+- Product information becomes outdated across websites and internal systems.
+- AI initiatives are weakened by incomplete or unreliable product data.
 
----
+## Initial Goal
 
-# Solution
+Provide one trusted source of truth for product records, recursive taxonomy, configurable attributes, models, variants, media, documents, and basic data-quality assistance.
 
-Product Hub provides:
+## Value Proposition
 
-- Central Product Repository
-- Recursive Product Taxonomy
-- Product Models & Variants
-- Flexible Attribute Management
-- Product Media Management
-- Product Documentation
-- Product Search
-- Import & Export
-- REST API
-- AI-assisted Data Enrichment
-- Audit History
-- Enterprise Security
+Product Hub helps organizations:
 
----
+- Consolidate fragmented product information.
+- Reduce duplicate and inconsistent product records.
+- Improve product-data completeness.
+- Standardize product taxonomy and attributes.
+- Prepare clean product information for websites, marketplaces, business systems, APIs, and AI applications.
+- Reduce repetitive manual product-data work through optional AI assistance.
 
-# Initial Target Customers
+## Initial Target Customers
 
-- Small Businesses
-- Medium Businesses
+Product Hub initially targets small and medium-sized organizations that manage substantial product information without requiring a large enterprise PIM implementation.
+
+Target organizations include:
+
 - Manufacturers
 - Distributors
 - Importers
 - Retailers
-- eCommerce Companies
-- Software Companies
+- E-commerce operators
+- Product-based software companies
+- Wholesale businesses
+- Catalog-driven businesses
 
----
+## Primary Users
 
-# Product Editions
+- Product administrators
+- Catalog administrators
+- Product managers
+- Product owners
+- Data stewards
 
-## Community Edition
+## Secondary Users
 
-Free
+- Marketing teams
+- Sales teams
+- E-commerce teams
+- Procurement teams
+- Engineering teams
+- Customer-support teams
 
-Designed for:
+## Core Capabilities
 
-- Learning
-- Personal Projects
-- Small Teams
+- Organization workspaces
+- Product records
+- Recursive product taxonomy
+- Product models and variants
+- Configurable product attributes
+- Product media and documents
+- Search and filtering
+- CSV import and export
+- Basic audit history
+- REST API
+- Optional AI assistance
 
-Deployment
+## AI Philosophy
 
-- Self-hosted
+Product Hub is AI-assisted, not AI-dependent.
 
----
+The product must remain fully usable when AI is disabled, unavailable, or not configured.
 
-## Professional Edition
-
-Subscription
-
-Designed for:
-
-- Small Businesses
-- Medium Businesses
-
-Deployment
-
-- SaaS
-- Self-hosted
-
----
-
-## Enterprise Edition
-
-Subscription
-
-Designed for:
-
-- Large Enterprises
-
-Deployment
-
-- SaaS
-- Self-hosted
-
-Additional Capabilities
-
-- SSO
-- Enterprise AI Providers
-- Enterprise Security
-- Enterprise Support
-
----
-
-# Deployment
-
-- SaaS
-- Self-hosted
-
----
-
-# AI Philosophy
-
-Product Hub is **AI-Enhanced**, not **AI-Driven**.
-
-AI accelerates users but never replaces enterprise business rules.
-
-Every AI capability is:
+Every AI capability must be:
 
 - Optional
-- Human Reviewable
-- Provider Independent
-- Cost Controlled
+- Human-reviewable
+- Provider-independent
+- Cost-controlled
+- Measurable
+- Non-destructive by default
 
----
+AI must assist users without becoming the authoritative owner of product data.
 
-# AI Features (MVP)
+## Initial AI Capabilities
 
-- Product Description Generation
-- Product Attribute Suggestions
-- Product Categorization Assistance
+The MVP may include:
 
----
+- Product category suggestions
+- Product attribute suggestions
+- Product description generation
 
-# API
+Every AI-generated result must be reviewed and explicitly accepted by a user before it changes an authoritative product record.
 
+## Planned Editions
+
+### Community
+
+- Free
+- Self-hosted
+- Core product-management capabilities
+- No managed AI usage
+
+### Professional
+
+- Subscription
+- Managed SaaS
+- Optional managed AI allowance
+- Advanced product-management capabilities
+- Standard support
+
+### Enterprise
+
+- Subscription or commercial agreement
+- Managed SaaS or customer-controlled deployment
+- Enterprise identity integration
+- Advanced access control and audit capabilities
+- Bring-your-own AI provider support
+- Priority support
+
+## Planned Channels
+
+- Web Application
 - REST API
 
-Future
+Future channels may include:
 
-- GraphQL
 - Webhooks
-- SDK
+- SDKs
+- MCP Server
+- Integration plugins
 
----
+## Planned Deployment
 
-# Technology Goals
+- SaaS
+- Self-hosted
 
-- Cloud Native
-- Low Operational Cost
-- Modular Monolith
-- API First
-- Enterprise Architecture
-- Domain Driven Design
-- Multi Tenant
-- Extensible
+## Commercial Model
 
----
+- Community: Free and self-hosted
+- Professional: Paid SaaS subscription
+- Enterprise: Paid SaaS or customer-controlled deployment
 
-# Long-Term Vision
+Pricing remains subject to market validation.
 
-Product Hub is the foundation of a broader Master Data Platform.
+## Architecture Direction
 
-Future products include:
+Product Hub will initially use:
+
+- A modular monolith
+- Domain-oriented modules
+- Multi-tenant organization isolation
+- API-first application design
+- Provider-independent AI integration
+- Low-cost cloud deployment
+- Secure defaults
+- Automated testing for critical workflows
+
+## Long-Term Direction
+
+Product Hub may eventually become part of a broader master-data product family that includes:
 
 - Vendor Hub
 - Customer Hub
 - Asset Hub
+- Location Hub
 - Document Hub
 - Reference Data Hub
 
----
+Future products must be created only when supported by validated customer demand.
 
-# Repository Status
+## Repository Status
 
-Current Phase
+Current phase:
 
+```text
 Product Discovery
-
-Current Version
-
-0.1.0 (Planning)
